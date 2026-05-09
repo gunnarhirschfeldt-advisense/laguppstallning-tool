@@ -9,6 +9,8 @@ export type PositionMeta = {
   gridRow: number;
   gridCol: number;
   offsetY?: number;
+  svgX: number;
+  svgY: number;
 };
 
 // SFK brand colors
@@ -29,39 +31,46 @@ const C = {
 export const POSITIONS: Record<Position, PositionMeta> = {
   FW: {
     label: 'FW', fullName: 'Forward',
-    bg: C.redLight, text: C.redDark, border: C.red,
+    bg: C.red, text: '#fff', border: '#ff6680',
     gridRow: 1, gridCol: 3,
+    svgX: 168, svgY: 68,
   },
   VM: {
     label: 'VM', fullName: 'Vänster mitt',
-    bg: C.purpleAccL, text: C.purpleMid, border: C.purpleAcc,
+    bg: C.purpleMid, text: '#fff', border: C.purpleAcc,
     gridRow: 2, gridCol: 1,
+    svgX: 72, svgY: 155,
   },
   CM: {
     label: 'CM', fullName: 'Mitt mitt',
-    bg: C.purpleAccL, text: C.purpleMid, border: C.purpleAcc,
+    bg: C.purpleMid, text: '#fff', border: C.purpleAcc,
     gridRow: 2, gridCol: 3,
     offsetY: 18,
+    svgX: 168, svgY: 195,
   },
   HM: {
     label: 'HM', fullName: 'Höger mitt',
-    bg: C.purpleAccL, text: C.purpleMid, border: C.purpleAcc,
+    bg: C.purpleMid, text: '#fff', border: C.purpleAcc,
     gridRow: 2, gridCol: 5,
+    svgX: 264, svgY: 155,
   },
   VB: {
     label: 'VB', fullName: 'Vänsterback',
-    bg: C.purpleLight, text: C.purple, border: C.purpleMid,
+    bg: C.purple, text: '#fff', border: C.purpleMid,
     gridRow: 3, gridCol: 2,
+    svgX: 104, svgY: 302,
   },
   HB: {
     label: 'HB', fullName: 'Högerback',
-    bg: C.purpleLight, text: C.purple, border: C.purpleMid,
+    bg: C.purple, text: '#fff', border: C.purpleMid,
     gridRow: 3, gridCol: 4,
+    svgX: 232, svgY: 302,
   },
   MV: {
     label: 'MV', fullName: 'Målvakt',
-    bg: C.goldLight, text: C.goldDark, border: C.gold,
+    bg: '#7A6030', text: '#fff', border: C.gold,
     gridRow: 4, gridCol: 3,
+    svgX: 168, svgY: 400,
   },
 };
 

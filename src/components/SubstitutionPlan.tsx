@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { Plus, Trash2, ArrowRight } from 'lucide-react';
 import { useMatchStore } from '../store/matchStore';
 
-const SFK = { purple: '#3C1053', gold: '#C1AA7C' };
-
 export function SubstitutionPlan() {
   const { match, activePeriodIdx, addPlannedSub, removePlannedSub } = useMatchStore();
   const { positions, substitutes, plannedSubs } = match.periods[activePeriodIdx];
@@ -43,26 +41,47 @@ export function SubstitutionPlan() {
     return a.minute - b.minute;
   });
 
-  const inputStyle = { borderColor: '#D0C8D8' };
-  const inputClass = 'w-full rounded-lg border px-2 py-2 text-sm focus:outline-none bg-white';
+  const selectStyle = {
+    background: '#111118',
+    border: '1px solid rgba(255,255,255,0.12)',
+    color: '#EDEDF1',
+    borderRadius: 8,
+    padding: '8px 10px',
+    fontSize: 14,
+    width: '100%',
+    outline: 'none',
+  };
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: SFK.purple }}>
-        Planerade byten — period {activePeriodIdx + 1}
-      </h2>
+      <div className="flex items-center gap-2">
+        <h2 className="text-xs font-semibold uppercase tracking-widest"
+          style={{ color: 'rgba(193,170,124,0.6)' }}>
+          Planerade byten
+        </h2>
+        <span className="rounded-full px-2 py-0.5 text-xs font-bold"
+          style={{
+            background: 'rgba(193,170,124,0.15)',
+            color: '#C1AA7C',
+            border: '1px solid rgba(193,170,124,0.25)',
+          }}>
+          P{activePeriodIdx + 1}
+        </span>
+      </div>
 
-      <div className="bg-white rounded-xl border p-3 space-y-3" style={{ borderColor: '#DCDCDE' }}>
+      {/* Add form */}
+      <div className="rounded-xl p-3 space-y-3"
+        style={{ background: '#111118', border: '1px solid rgba(255,255,255,0.08)' }}>
         <div className="flex gap-2 items-center">
-          <label className="text-xs w-12 shrink-0" style={{ color: '#6B5080' }}>Minut</label>
-          <input type="number" min={0} max={60} value={minuteInput}
-            onChange={e => setMinuteInput(e.target.value)} placeholder="Vid behov"
-            className={inputClass} style={inputStyle} />
+          <label className="text-xs w-12 shrink-0" style={{ color: 'rgba(237,237,241,0.45)' }}>Minut</label>
+          <input type="number" min={0} max={90} value={minuteInput}
+            onChange={e => setMinuteInput(e.target.value)} placeholder="Valfritt"
+            style={{ ...selectStyle, width: '100%' }} />
         </div>
         <div className="flex gap-2 items-center">
-          <label className="text-xs w-12 shrink-0" style={{ color: '#6B5080' }}>Ut</label>
+          <label className="text-xs w-12 shrink-0" style={{ color: 'rgba(237,237,241,0.45)' }}>Ut</label>
           <select value={playerOutId} onChange={e => setPlayerOutId(e.target.value)}
-            className={inputClass} style={inputStyle}>
+            style={selectStyle}>
             <option value="">Välj spelare...</option>
             {onFieldIds.map(id => (
               <option key={id} value={id}>{playerName(id)} ({positionFor(id)})</option>
@@ -70,9 +89,9 @@ export function SubstitutionPlan() {
           </select>
         </div>
         <div className="flex gap-2 items-center">
-          <label className="text-xs w-12 shrink-0" style={{ color: '#6B5080' }}>In</label>
+          <label className="text-xs w-12 shrink-0" style={{ color: 'rgba(237,237,241,0.45)' }}>In</label>
           <select value={playerInId} onChange={e => setPlayerInId(e.target.value)}
-            className={inputClass} style={inputStyle}>
+            style={selectStyle}>
             <option value="">Välj spelare...</option>
             {substitutes.map(id => (
               <option key={id} value={id}>{playerName(id)}</option>
@@ -80,41 +99,49 @@ export function SubstitutionPlan() {
           </select>
         </div>
 
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs" style={{ color: '#FC273F' }}>{error}</p>}
 
         <button onClick={handleAdd}
           disabled={onFieldIds.length === 0 || substitutes.length === 0}
-          className="w-full flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
-          style={{ background: SFK.purple }}>
+          className="w-full flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all disabled:opacity-30"
+          style={{ background: '#3C1053', color: '#EDEDF1', border: '1px solid rgba(92,6,140,0.6)' }}>
           <Plus size={15} /> Lägg till byte
         </button>
 
         {onFieldIds.length === 0 && (
-          <p className="text-xs text-center" style={{ color: '#A090B0' }}>
-            Placera spelare på planen först
+          <p className="text-xs text-center" style={{ color: 'rgba(237,237,241,0.3)' }}>
+            Placera spelare på planen först (Plan-fliken)
           </p>
         )}
       </div>
 
+      {/* List */}
       {sorted.length > 0 && (
         <div className="space-y-2">
           {sorted.map(sub => (
-            <div key={sub.id} className="flex items-center gap-3 bg-white rounded-xl border px-3 py-2.5"
-              style={{ borderColor: '#DCDCDE' }}>
-              <span className="text-xs font-bold w-12 shrink-0 text-center" style={{ color: SFK.gold }}>
-                {sub.minute !== null ? `${sub.minute}'` : 'Vid behov'}
+            <div key={sub.id}
+              className="flex items-center gap-3 rounded-xl px-3 py-2.5"
+              style={{ background: '#111118', border: '1px solid rgba(255,255,255,0.07)' }}>
+              <span className="text-xs font-bold w-12 shrink-0 text-center"
+                style={{ color: '#C1AA7C' }}>
+                {sub.minute !== null ? `${sub.minute}'` : 'Vb'}
               </span>
               <div className="flex-1 flex items-center gap-1.5 text-sm min-w-0">
-                <span className="font-medium truncate">{playerName(sub.playerOutId)}</span>
-                <ArrowRight size={13} className="shrink-0" style={{ color: '#C0B0C8' }} />
-                <span className="font-semibold truncate" style={{ color: SFK.purple }}>
+                <span className="truncate" style={{ color: '#FC273F', fontWeight: 600 }}>
+                  {playerName(sub.playerOutId)}
+                </span>
+                <ArrowRight size={12} className="shrink-0" style={{ color: 'rgba(237,237,241,0.25)' }} />
+                <span className="truncate font-semibold" style={{ color: '#7EE89E' }}>
                   {playerName(sub.playerInId)}
                 </span>
               </div>
               <button onClick={() => removePlannedSub(sub.id)}
-                className="p-1 opacity-40 hover:opacity-100 transition-opacity"
+                className="p-1 transition-opacity"
+                style={{ opacity: 0.35 }}
+                onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                onMouseLeave={e => (e.currentTarget.style.opacity = '0.35')}
                 aria-label="Ta bort byte">
-                <Trash2 size={15} />
+                <Trash2 size={14} style={{ color: '#EDEDF1' }} />
               </button>
             </div>
           ))}
@@ -122,7 +149,7 @@ export function SubstitutionPlan() {
       )}
 
       {sorted.length === 0 && (
-        <p className="text-sm italic text-center py-2" style={{ color: '#A090B0' }}>
+        <p className="text-sm italic text-center py-3" style={{ color: 'rgba(237,237,241,0.25)' }}>
           Inga planerade byten
         </p>
       )}
