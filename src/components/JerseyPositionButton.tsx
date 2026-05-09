@@ -23,7 +23,7 @@ export function JerseyPositionButton({
 
   const jerseyH = compact ? 80 : selected ? 112 : 96;
   const jerseyW = Math.round(jerseyH * (240 / 360));
-  const numSize = compact ? 20 : selected ? 28 : 24;
+  const numSize = compact ? 17 : selected ? 24 : 20;
 
   const jerseyImage = isGK
     ? `${BASE}images/goalkeeper-jersey-1-transparent-240.webp`
@@ -75,7 +75,7 @@ export function JerseyPositionButton({
         {showNumber && (
           <span
             className="jersey-number absolute left-1/2 -translate-x-1/2 -translate-y-1/2 select-none"
-            style={{ top: '52%', fontSize: numSize }}>
+            style={{ top: '38%', fontSize: numSize, letterSpacing: '-0.05em' }}>
             {player.number}
           </span>
         )}
