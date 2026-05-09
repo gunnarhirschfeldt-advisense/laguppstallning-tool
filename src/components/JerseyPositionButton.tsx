@@ -75,7 +75,7 @@ export function JerseyPositionButton({
         {showNumber && (
           <span
             className="jersey-number absolute left-1/2 -translate-x-1/2 -translate-y-1/2 select-none"
-            style={{ top: '38%', fontSize: numSize, letterSpacing: '-0.05em' }}>
+            style={{ top: '43%', fontSize: numSize, letterSpacing: '-0.05em' }}>
             {player.number}
           </span>
         )}
