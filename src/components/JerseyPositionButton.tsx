@@ -27,7 +27,7 @@ export function JerseyPositionButton({
 
   const jerseyImage = isGK
     ? `${BASE}images/goalkeeper-jersey-1-transparent-240.webp`
-    : `${BASE}images/jersey-thumbnail-240.webp`;
+    : `${BASE}images/outfield-jersey-transparent-240.webp`;
 
   const showNumber = !isGK;
 
@@ -69,7 +69,7 @@ export function JerseyPositionButton({
             height: jerseyH,
             display: 'block',
             objectFit: 'cover',
-            mixBlendMode: isGK ? 'normal' : 'darken',
+            mixBlendMode: 'normal',
           }}
         />
         {showNumber && (
