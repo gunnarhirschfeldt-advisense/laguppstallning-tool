@@ -1,21 +1,24 @@
 import { useState } from 'react';
 import { Plus, Trash2, ArrowRight } from 'lucide-react';
 import { useMatchStore } from '../store/matchStore';
+import { useSquadStore } from '../store/squadStore';
+import { squad, squadPlayerName } from '../data/squad';
 
 export function SubstitutionPlan() {
   const { match, activePeriodIdx, addPlannedSub, removePlannedSub } = useMatchStore();
-  const { positions, substitutes, plannedSubs } = match.periods[activePeriodIdx];
+  const { positions, plannedSubs } = match.periods[activePeriodIdx];
+  const calledPlayers = useSquadStore(s => s.calledPlayers);
 
   const onFieldIds = Object.values(positions).filter(Boolean) as string[];
+  const onFieldSet = new Set(onFieldIds);
+  const benchPlayers = squad.filter(p => calledPlayers.includes(p.id) && !onFieldSet.has(p.id));
 
   const [minuteInput, setMinuteInput] = useState('');
   const [playerOutId, setPlayerOutId] = useState('');
   const [playerInId, setPlayerInId] = useState('');
   const [error, setError] = useState('');
 
-  function playerName(id: string) {
-    return match.roster.find(p => p.id === id)?.name ?? id;
-  }
+  function playerName(id: string) { return squadPlayerName(id); }
   function positionFor(id: string) {
     for (const [pos, pid] of Object.entries(positions)) {
       if (pid === id) return pos;
@@ -93,8 +96,8 @@ export function SubstitutionPlan() {
           <select value={playerInId} onChange={e => setPlayerInId(e.target.value)}
             style={selectStyle}>
             <option value="">Välj spelare...</option>
-            {substitutes.map(id => (
-              <option key={id} value={id}>{playerName(id)}</option>
+            {benchPlayers.map(p => (
+              <option key={p.id} value={p.id}>{p.name}</option>
             ))}
           </select>
         </div>
@@ -102,7 +105,7 @@ export function SubstitutionPlan() {
         {error && <p className="text-xs" style={{ color: '#FC273F' }}>{error}</p>}
 
         <button onClick={handleAdd}
-          disabled={onFieldIds.length === 0 || substitutes.length === 0}
+          disabled={onFieldIds.length === 0 || benchPlayers.length === 0}
           className="w-full flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all disabled:opacity-30"
           style={{ background: '#3C1053', color: '#EDEDF1', border: '1px solid rgba(92,6,140,0.6)' }}>
           <Plus size={15} /> Lägg till byte
@@ -111,6 +114,11 @@ export function SubstitutionPlan() {
         {onFieldIds.length === 0 && (
           <p className="text-xs text-center" style={{ color: 'rgba(237,237,241,0.3)' }}>
             Placera spelare på planen först (Plan-fliken)
+          </p>
+        )}
+        {onFieldIds.length > 0 && benchPlayers.length === 0 && (
+          <p className="text-xs text-center" style={{ color: 'rgba(237,237,241,0.3)' }}>
+            Kalla fler spelare i Trupp-fliken
           </p>
         )}
       </div>

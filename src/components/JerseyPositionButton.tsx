@@ -82,7 +82,7 @@ export function JerseyPositionButton({
       </div>
 
       {/* Namnpill */}
-      <span className="mt-0.5 max-w-[72px] truncate rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-slate-900 shadow-sm">
+      <span className="-mt-5 max-w-[72px] truncate rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-bold text-slate-900 shadow-sm">
         {player.name}
       </span>
     </button>

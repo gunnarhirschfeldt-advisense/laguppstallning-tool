@@ -4,8 +4,9 @@ import sfkLogo from './assets/sfk-logo.svg';
 import { useMatchStore } from './store/matchStore';
 import { PitchSVG } from './components/PitchSVG';
 import { Bench } from './components/Bench';
-import { Roster } from './components/Roster';
 import { SubstitutionPlan } from './components/SubstitutionPlan';
+import { SquadPage } from './pages/SquadPage';
+import { useSquadStore } from './store/squadStore';
 import { ActionBar, type AppTab } from './components/ActionBar';
 import type { Position } from './types/domain';
 import './index.css';
@@ -25,6 +26,7 @@ export default function App() {
     match, activePeriodIdx, selectedPlayerId,
     setMatchName, addPeriod, removePeriod, setActivePeriod, resetMatch,
   } = useMatchStore();
+  const calledCount = useSquadStore(s => s.calledPlayers.length);
 
   const [activeTab, setActiveTab] = useState<AppTab>('plan');
   const [editingName, setEditingName] = useState(false);
@@ -148,6 +150,13 @@ export default function App() {
 
         {activeTab === 'plan' && (
           <>
+            {/* Warning: too few called players */}
+            {calledCount < 7 && (
+              <div className="mx-3 mt-2 rounded-lg px-3 py-2 text-sm"
+                style={{ background: 'rgba(245,158,11,0.15)', border: '1px solid rgba(245,158,11,0.35)', color: '#FCD34D' }}>
+                {calledCount} av minst 7 spelare kallade
+              </div>
+            )}
             {/* Helper hint */}
             {selectedPlayerId && (
               <div className="mx-3 mt-2 px-3 py-1.5 rounded-lg text-xs text-center"
@@ -161,13 +170,7 @@ export default function App() {
         )}
 
         {activeTab === 'trupp' && (
-          <div className="p-4">
-            <h2 className="text-xs font-semibold uppercase tracking-widest mb-4"
-              style={{ color: 'rgba(193,170,124,0.6)' }}>
-              Trupp
-            </h2>
-            <Roster />
-          </div>
+          <SquadPage />
         )}
 
         {activeTab === 'byten' && (

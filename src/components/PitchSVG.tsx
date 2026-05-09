@@ -1,7 +1,8 @@
 import { useMatchStore } from '../store/matchStore';
 import { POSITIONS, ALL_POSITIONS } from '../utils/formations';
 import { JerseyPositionButton } from './JerseyPositionButton';
-import type { Position, Player, PlannedSub } from '../types/domain';
+import { squadPlayerName, squadPlayerNumber } from '../data/squad';
+import type { Position, PlannedSub } from '../types/domain';
 
 const SVG_W = 336;
 const SVG_H = 460;
@@ -15,10 +16,9 @@ const ROLE_MAP: Record<Position, PositionRole> = {
   FW: 'FWD',
 };
 
-function getNumber(pos: Position, playerId: string, roster: Player[]): number {
+function getNumber(pos: Position, playerId: string): number {
   if (pos === 'MV') return 1;
-  const idx = roster.findIndex(p => p.id === playerId);
-  return idx < 0 ? 99 : idx + 2;
+  return squadPlayerNumber(playerId) ?? 99;
 }
 
 function outBadgeLabel(subs: PlannedSub[], playerId: string): string | null {
@@ -33,6 +33,8 @@ function outBadgeLabel(subs: PlannedSub[], playerId: string): string | null {
 export function PitchSVG() {
   const { match, activePeriodIdx, selectedPlayerId, assignToPosition, removeFromPosition } = useMatchStore();
   const { positions, plannedSubs } = match.periods[activePeriodIdx];
+
+  function playerName(id: string) { return squadPlayerName(id); }
 
   function handlePositionClick(pos: Position) {
     if (selectedPlayerId) {
@@ -85,8 +87,7 @@ export function PitchSVG() {
         const pctX   = (meta.svgX / SVG_W) * 100;
         const pctY   = (meta.svgY / SVG_H) * 100;
         const playerId = positions[pos];
-        const player   = playerId ? match.roster.find(p => p.id === playerId) : null;
-        const badge    = player ? outBadgeLabel(plannedSubs, player.id) : null;
+        const badge    = playerId ? outBadgeLabel(plannedSubs, playerId) : null;
 
         return (
           <div
@@ -102,15 +103,15 @@ export function PitchSVG() {
             <JerseyPositionButton
               positionLabel={meta.label}
               role={ROLE_MAP[pos]}
-              player={player
-                ? { name: player.name, number: getNumber(pos, player.id, match.roster) }
+              player={playerId
+                ? { name: playerName(playerId), number: getNumber(pos, playerId) }
                 : undefined}
-              selected={!player && !!selectedPlayerId}
+              selected={!playerId && !!selectedPlayerId}
               onClick={() => handlePositionClick(pos)}
             />
 
             {/* Sub-out badge */}
-            {badge && (
+            {badge && playerId && (
               <span
                 className="absolute flex items-center justify-center rounded-full font-black text-white select-none pointer-events-none"
                 style={{

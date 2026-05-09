@@ -1,4 +1,6 @@
 import { useMatchStore } from '../store/matchStore';
+import { useSquadStore } from '../store/squadStore';
+import { squad } from '../data/squad';
 import type { PlannedSub } from '../types/domain';
 
 function initials(name: string): string {
@@ -16,11 +18,11 @@ function inBadgeLabel(subs: PlannedSub[], playerId: string): string | null {
 
 export function Bench() {
   const { match, activePeriodIdx, selectedPlayerId, selectPlayer } = useMatchStore();
-  const { substitutes, plannedSubs } = match.periods[activePeriodIdx];
+  const { positions, plannedSubs } = match.periods[activePeriodIdx];
+  const calledPlayers = useSquadStore(s => s.calledPlayers);
 
-  const players = substitutes
-    .map(id => match.roster.find(p => p.id === id))
-    .filter(Boolean) as typeof match.roster;
+  const onFieldIds = new Set(Object.values(positions).filter(Boolean) as string[]);
+  const players = squad.filter(p => calledPlayers.includes(p.id) && !onFieldIds.has(p.id));
 
   if (players.length === 0) {
     return (
