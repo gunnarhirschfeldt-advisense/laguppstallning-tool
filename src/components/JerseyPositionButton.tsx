@@ -26,7 +26,7 @@ export function JerseyPositionButton({
   const numSize = compact ? 20 : selected ? 28 : 24;
 
   const jerseyImage = isGK
-    ? `${BASE}images/goalkeeper-jersey-1-240.webp`
+    ? `${BASE}images/goalkeeper-jersey-1-transparent-240.webp`
     : `${BASE}images/jersey-thumbnail-240.webp`;
 
   const showNumber = !isGK;
@@ -59,7 +59,7 @@ export function JerseyPositionButton({
         selected ? 'scale-105 ring-4 ring-white/60 shadow-lg rounded-xl' : ''
       }`}>
       {/* Jersey + number */}
-      <div className="relative overflow-hidden" style={{ width: jerseyW, height: jerseyH, borderRadius: isGK ? 8 : 0 }}>
+      <div className="relative" style={{ width: jerseyW, height: jerseyH }}>
         <img
           src={jerseyImage}
           alt=""
