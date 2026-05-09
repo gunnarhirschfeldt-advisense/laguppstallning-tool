@@ -26,7 +26,7 @@ export function JerseyPositionButton({
   const numSize = compact ? 20 : selected ? 28 : 24;
 
   const jerseyImage = isGK
-    ? `${BASE}images/jersey-gk-thumbnail-240.png`
+    ? `${BASE}images/goalkeeper-jersey-1-240.webp`
     : `${BASE}images/jersey-thumbnail-240.webp`;
 
   const showNumber = !isGK;
