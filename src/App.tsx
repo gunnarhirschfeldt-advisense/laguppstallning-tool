@@ -7,7 +7,6 @@ import { Bench } from './components/Bench';
 import { Roster } from './components/Roster';
 import { SubstitutionPlan } from './components/SubstitutionPlan';
 import { ActionBar, type AppTab } from './components/ActionBar';
-import { POSITIONS } from './utils/formations';
 import type { Position } from './types/domain';
 import './index.css';
 
