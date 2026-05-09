@@ -6,9 +6,9 @@ export type PositionMeta = {
   color: string;
   bgColor: string;
   borderColor: string;
-  // CSS grid placement (row from top, col 1-6)
   gridRow: number;
   gridCol: number;
+  offsetY?: number; // px nudge within the grid cell
 };
 
 export const POSITIONS: Record<Position, PositionMeta> = {
@@ -38,6 +38,7 @@ export const POSITIONS: Record<Position, PositionMeta> = {
     borderColor: 'border-green-400',
     gridRow: 2,
     gridCol: 3,
+    offsetY: 18,
   },
   HM: {
     label: 'HM',
@@ -55,7 +56,7 @@ export const POSITIONS: Record<Position, PositionMeta> = {
     bgColor: 'bg-blue-100',
     borderColor: 'border-blue-400',
     gridRow: 3,
-    gridCol: 1,
+    gridCol: 2,
   },
   HB: {
     label: 'HB',
@@ -64,7 +65,7 @@ export const POSITIONS: Record<Position, PositionMeta> = {
     bgColor: 'bg-blue-100',
     borderColor: 'border-blue-400',
     gridRow: 3,
-    gridCol: 5,
+    gridCol: 4,
   },
   MV: {
     label: 'MV',

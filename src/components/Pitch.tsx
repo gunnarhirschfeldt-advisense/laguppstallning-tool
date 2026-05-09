@@ -49,6 +49,7 @@ export function Pitch() {
               style={{
                 gridRow: meta.gridRow,
                 gridColumn: meta.gridCol,
+                transform: meta.offsetY ? `translateY(${meta.offsetY}px)` : undefined,
               }}
             >
               <button
