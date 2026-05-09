@@ -3,8 +3,8 @@ import { POSITIONS, ALL_POSITIONS } from '../utils/formations';
 import type { Position } from '../types/domain';
 
 export function Pitch() {
-  const { match, selectedPlayerId, assignToPosition, removeFromPosition } = useMatchStore();
-  const { positions } = match.lineup;
+  const { match, activePeriodIdx, selectedPlayerId, assignToPosition, removeFromPosition } = useMatchStore();
+  const { positions } = match.periods[activePeriodIdx];
 
   function handlePositionClick(pos: Position) {
     if (selectedPlayerId) {
@@ -49,22 +49,36 @@ export function Pitch() {
             >
               <button
                 onClick={() => handlePositionClick(pos)}
-                className="flex flex-col items-center justify-center rounded-xl border-2 transition-all min-w-[64px] min-h-[64px] px-2 py-1 cursor-pointer"
-                style={
-                  player
+                className="flex flex-col items-center justify-center rounded-xl border-2 transition-all cursor-pointer"
+                style={{
+                  width: 68,
+                  height: 68,
+                  ...(player
                     ? { background: meta.bg, borderColor: meta.border, color: meta.text }
                     : isTarget
                     ? { background: 'rgba(255,255,255,0.3)', borderColor: 'white', borderStyle: 'dashed', color: 'white' }
                     : { background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.35)', borderStyle: 'dashed', color: 'rgba(255,255,255,0.65)' }
-                }
+                  ),
+                }}
               >
-                <span className="text-xs font-semibold leading-none">{meta.label}</span>
+                <span style={{ fontSize: 11, fontWeight: 700, lineHeight: 1 }}>{meta.label}</span>
                 {player ? (
-                  <span className="text-sm font-semibold leading-tight mt-0.5 text-center max-w-[72px] truncate">
+                  <span style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    lineHeight: 1.2,
+                    marginTop: 3,
+                    width: 60,
+                    textAlign: 'center',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
+                    display: 'block',
+                  }}>
                     {player.name}
                   </span>
                 ) : (
-                  <span className="text-xs opacity-50 mt-0.5">–</span>
+                  <span style={{ fontSize: 11, opacity: 0.5, marginTop: 2 }}>–</span>
                 )}
               </button>
             </div>

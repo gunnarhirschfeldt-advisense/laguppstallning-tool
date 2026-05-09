@@ -22,5 +22,5 @@ export type Match = {
   id: string;
   name: string;
   roster: Player[];
-  lineup: Lineup;
+  periods: Lineup[]; // 1–3 periods, always at least 1
 };
