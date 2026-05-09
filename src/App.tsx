@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { RotateCcw, Edit2, Check } from 'lucide-react';
+import { Edit2, Check, RotateCcw } from 'lucide-react';
+import sfkLogo from './assets/sfk-logo.svg';
 import { useMatchStore } from './store/matchStore';
 import { Pitch } from './components/Pitch';
 import { Roster } from './components/Roster';
 import { SubstitutionPlan } from './components/SubstitutionPlan';
 import './index.css';
+
+const SFK = { purple: '#3C1053', gold: '#C1AA7C' };
 
 export default function App() {
   const { match, setMatchName, resetMatch } = useMatchStore();
@@ -12,35 +15,33 @@ export default function App() {
   const [nameInput, setNameInput] = useState('');
   const [confirmReset, setConfirmReset] = useState(false);
 
-  function startEditName() {
-    setNameInput(match.name);
-    setEditingName(true);
-  }
-
+  function startEditName() { setNameInput(match.name); setEditingName(true); }
   function saveName() {
-    const trimmed = nameInput.trim();
-    if (trimmed) setMatchName(trimmed);
+    const t = nameInput.trim();
+    if (t) setMatchName(t);
     setEditingName(false);
   }
 
   function handleReset() {
-    if (confirmReset) {
-      resetMatch();
-      setConfirmReset(false);
-    } else {
-      setConfirmReset(true);
-      setTimeout(() => setConfirmReset(false), 3000);
-    }
+    if (confirmReset) { resetMatch(); setConfirmReset(false); }
+    else { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 3000); }
   }
 
   return (
-    <div className="min-h-svh bg-slate-100">
+    <div className="min-h-svh" style={{ background: '#EDEDF1' }}>
       {/* Header */}
-      <header className="bg-white border-b border-slate-200 px-4 py-3 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-lg mx-auto flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 min-w-0">
+      <header
+        className="sticky top-0 z-20 px-4 py-3 shadow-md"
+        style={{ background: '#000000', borderBottom: `2px solid ${SFK.gold}` }}
+      >
+        <div className="max-w-lg mx-auto flex items-center gap-3">
+          {/* Logo */}
+          <img src={sfkLogo} alt="SFK" className="h-9 w-9 shrink-0" />
+
+          {/* Match name */}
+          <div className="flex-1 min-w-0">
             {editingName ? (
-              <div className="flex items-center gap-2 flex-1">
+              <div className="flex items-center gap-2">
                 <input
                   autoFocus
                   type="text"
@@ -48,57 +49,63 @@ export default function App() {
                   onChange={e => setNameInput(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && saveName()}
                   onBlur={saveName}
-                  className="text-base font-semibold border-b-2 border-green-500 bg-transparent focus:outline-none min-w-0 flex-1"
+                  className="flex-1 bg-transparent border-b-2 focus:outline-none text-sm font-semibold min-w-0"
+                  style={{ borderColor: SFK.gold, color: SFK.gold }}
                 />
-                <button onClick={saveName} className="text-green-600">
-                  <Check size={16} />
+                <button onClick={saveName} style={{ color: SFK.gold }}>
+                  <Check size={15} />
                 </button>
               </div>
             ) : (
-              <button
-                onClick={startEditName}
-                className="flex items-center gap-2 text-left min-w-0"
-              >
-                <span className="text-base font-semibold text-slate-800 truncate">
-                  {match.name}
+              <button onClick={startEditName} className="flex items-center gap-2 min-w-0">
+                <span
+                  className="font-semibold truncate text-sm"
+                  style={{
+                    color: SFK.gold,
+                    fontFamily: "'Barlow Condensed', sans-serif",
+                    fontStyle: 'italic',
+                    fontWeight: 800,
+                    fontSize: '1.1rem',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {match.name.toUpperCase()}
                 </span>
-                <Edit2 size={13} className="text-slate-400 shrink-0" />
+                <Edit2 size={12} style={{ color: `${SFK.gold}80` }} className="shrink-0" />
               </button>
             )}
           </div>
 
+          {/* Reset button */}
           <button
             onClick={handleReset}
-            className={[
-              'flex items-center gap-1.5 text-sm px-3 py-1.5 rounded-lg border transition-all shrink-0',
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg border shrink-0 transition-all"
+            style={
               confirmReset
-                ? 'bg-red-600 text-white border-red-600'
-                : 'text-slate-500 border-slate-200 bg-white active:bg-slate-50',
-            ].join(' ')}
+                ? { background: '#FC273F', borderColor: '#FC273F', color: '#fff' }
+                : { background: 'transparent', borderColor: `${SFK.gold}60`, color: `${SFK.gold}CC` }
+            }
           >
-            <RotateCcw size={14} />
+            <RotateCcw size={13} />
             {confirmReset ? 'Bekräfta?' : 'Ny match'}
           </button>
         </div>
       </header>
 
-      {/* Main */}
-      <main className="max-w-lg mx-auto px-4 py-4 space-y-4 pb-8">
-        {/* Pitch */}
+      {/* Content */}
+      <main className="max-w-lg mx-auto px-4 py-4 space-y-4 pb-10">
         <section>
           <Pitch />
         </section>
 
-        {/* Roster */}
-        <section className="bg-white rounded-xl border border-slate-200 p-4">
-          <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-3">
+        <section className="rounded-xl border p-4" style={{ background: '#FFFFFF', borderColor: '#DCDCDE' }}>
+          <h2 className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: SFK.purple }}>
             Trupp
           </h2>
           <Roster />
         </section>
 
-        {/* Substitutions */}
-        <section className="bg-slate-50 rounded-xl border border-slate-200 p-4">
+        <section className="rounded-xl border p-4" style={{ background: '#F5F0EA', borderColor: '#DCDCDE' }}>
           <SubstitutionPlan />
         </section>
       </main>

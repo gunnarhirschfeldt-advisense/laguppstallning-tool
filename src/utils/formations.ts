@@ -3,78 +3,65 @@ import type { Position } from '../types/domain';
 export type PositionMeta = {
   label: string;
   fullName: string;
-  color: string;
-  bgColor: string;
-  borderColor: string;
+  bg: string;
+  text: string;
+  border: string;
   gridRow: number;
   gridCol: number;
-  offsetY?: number; // px nudge within the grid cell
+  offsetY?: number;
+};
+
+// SFK brand colors
+const C = {
+  gold:       '#C1AA7C',
+  goldLight:  '#F5EDDC',
+  goldDark:   '#7A6030',
+  purple:     '#3C1053',
+  purpleLight:'#E8D5F5',
+  purpleMid:  '#5C068C',
+  purpleAcc:  '#9A20F4',
+  purpleAccL: '#EDE0F7',
+  red:        '#FC273F',
+  redLight:   '#FFE0E4',
+  redDark:    '#A0001B',
 };
 
 export const POSITIONS: Record<Position, PositionMeta> = {
   FW: {
-    label: 'FW',
-    fullName: 'Forward',
-    color: 'text-red-800',
-    bgColor: 'bg-red-100',
-    borderColor: 'border-red-400',
-    gridRow: 1,
-    gridCol: 3,
+    label: 'FW', fullName: 'Forward',
+    bg: C.redLight, text: C.redDark, border: C.red,
+    gridRow: 1, gridCol: 3,
   },
   VM: {
-    label: 'VM',
-    fullName: 'Vänster mitt',
-    color: 'text-green-800',
-    bgColor: 'bg-green-100',
-    borderColor: 'border-green-400',
-    gridRow: 2,
-    gridCol: 1,
+    label: 'VM', fullName: 'Vänster mitt',
+    bg: C.purpleAccL, text: C.purpleMid, border: C.purpleAcc,
+    gridRow: 2, gridCol: 1,
   },
   CM: {
-    label: 'CM',
-    fullName: 'Mitt mitt',
-    color: 'text-green-800',
-    bgColor: 'bg-green-100',
-    borderColor: 'border-green-400',
-    gridRow: 2,
-    gridCol: 3,
+    label: 'CM', fullName: 'Mitt mitt',
+    bg: C.purpleAccL, text: C.purpleMid, border: C.purpleAcc,
+    gridRow: 2, gridCol: 3,
     offsetY: 18,
   },
   HM: {
-    label: 'HM',
-    fullName: 'Höger mitt',
-    color: 'text-green-800',
-    bgColor: 'bg-green-100',
-    borderColor: 'border-green-400',
-    gridRow: 2,
-    gridCol: 5,
+    label: 'HM', fullName: 'Höger mitt',
+    bg: C.purpleAccL, text: C.purpleMid, border: C.purpleAcc,
+    gridRow: 2, gridCol: 5,
   },
   VB: {
-    label: 'VB',
-    fullName: 'Vänsterback',
-    color: 'text-blue-800',
-    bgColor: 'bg-blue-100',
-    borderColor: 'border-blue-400',
-    gridRow: 3,
-    gridCol: 2,
+    label: 'VB', fullName: 'Vänsterback',
+    bg: C.purpleLight, text: C.purple, border: C.purpleMid,
+    gridRow: 3, gridCol: 2,
   },
   HB: {
-    label: 'HB',
-    fullName: 'Högerback',
-    color: 'text-blue-800',
-    bgColor: 'bg-blue-100',
-    borderColor: 'border-blue-400',
-    gridRow: 3,
-    gridCol: 4,
+    label: 'HB', fullName: 'Högerback',
+    bg: C.purpleLight, text: C.purple, border: C.purpleMid,
+    gridRow: 3, gridCol: 4,
   },
   MV: {
-    label: 'MV',
-    fullName: 'Målvakt',
-    color: 'text-yellow-800',
-    bgColor: 'bg-yellow-100',
-    borderColor: 'border-yellow-400',
-    gridRow: 4,
-    gridCol: 3,
+    label: 'MV', fullName: 'Målvakt',
+    bg: C.goldLight, text: C.goldDark, border: C.gold,
+    gridRow: 4, gridCol: 3,
   },
 };
 

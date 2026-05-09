@@ -2,6 +2,13 @@ import { useState, useRef } from 'react';
 import { UserPlus, X } from 'lucide-react';
 import { useMatchStore } from '../store/matchStore';
 
+const SFK = {
+  purple:  '#3C1053',
+  purpleL: '#EDE0F7',
+  gold:    '#C1AA7C',
+  goldL:   '#F5EDDC',
+};
+
 export function Roster() {
   const { match, selectedPlayerId, selectPlayer, addPlayer, removePlayer } = useMatchStore();
   const [inputValue, setInputValue] = useState('');
@@ -17,10 +24,6 @@ export function Roster() {
     inputRef.current?.focus();
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') handleAdd();
-  }
-
   const substitutes = match.lineup.substitutes
     .map(id => match.roster.find(p => p.id === id))
     .filter(Boolean) as typeof match.roster;
@@ -34,14 +37,16 @@ export function Roster() {
           type="text"
           value={inputValue}
           onChange={e => setInputValue(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={e => e.key === 'Enter' && handleAdd()}
           placeholder="Spelarens namn..."
-          className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+          className="flex-1 rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2"
+          style={{ borderColor: '#D0C8D8', '--tw-ring-color': SFK.purple } as React.CSSProperties}
         />
         <button
           onClick={handleAdd}
           disabled={!inputValue.trim()}
-          className="flex items-center gap-1 bg-green-600 text-white rounded-lg px-3 py-2 text-sm font-medium disabled:opacity-40 active:bg-green-700 min-w-[44px] justify-center"
+          className="flex items-center justify-center rounded-lg px-3 py-2 text-white min-w-[44px] disabled:opacity-40 transition-opacity"
+          style={{ background: SFK.purple }}
         >
           <UserPlus size={16} />
         </button>
@@ -50,7 +55,7 @@ export function Roster() {
       {/* On field */}
       {onFieldIds.size > 0 && (
         <div>
-          <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">
+          <p className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: SFK.purple }}>
             På plan
           </p>
           <div className="flex flex-wrap gap-2">
@@ -61,10 +66,10 @@ export function Roster() {
                 <PlayerChip
                   key={id}
                   player={player}
-                  variant="on-field"
-                  selected={selectedPlayerId === id}
-                  onSelect={() => selectPlayer(selectedPlayerId === id ? null : id)}
+                  selected={false}
+                  onSelect={() => {}}
                   onRemove={() => removePlayer(id)}
+                  variant="on-field"
                 />
               );
             })}
@@ -74,11 +79,11 @@ export function Roster() {
 
       {/* Bench */}
       <div>
-        <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1.5">
+        <p className="text-xs font-semibold uppercase tracking-wide mb-1.5" style={{ color: SFK.purple }}>
           Avbytare{substitutes.length > 0 ? ` (${substitutes.length})` : ''}
         </p>
         {substitutes.length === 0 ? (
-          <p className="text-sm text-slate-400 italic">
+          <p className="text-sm italic" style={{ color: '#A090B0' }}>
             Inga avbytare — lägg till spelare ovan
           </p>
         ) : (
@@ -87,10 +92,10 @@ export function Roster() {
               <PlayerChip
                 key={player.id}
                 player={player}
-                variant="bench"
                 selected={selectedPlayerId === player.id}
                 onSelect={() => selectPlayer(selectedPlayerId === player.id ? null : player.id)}
                 onRemove={() => removePlayer(player.id)}
+                variant="bench"
               />
             ))}
           </div>
@@ -98,7 +103,10 @@ export function Roster() {
       </div>
 
       {selectedPlayerId && (
-        <p className="text-xs text-green-700 bg-green-50 rounded-lg px-3 py-2 border border-green-200">
+        <p
+          className="text-xs rounded-lg px-3 py-2 border"
+          style={{ background: SFK.goldL, borderColor: SFK.gold, color: SFK.purple }}
+        >
           Spelare vald — tryck på en position på planen för att placera
         </p>
       )}
@@ -115,23 +123,25 @@ type PlayerChipProps = {
 };
 
 function PlayerChip({ player, variant, selected, onSelect, onRemove }: PlayerChipProps) {
+  const selectedStyle = { background: SFK.purple, borderColor: SFK.gold, color: '#FFFFFF' };
+  const benchStyle   = { background: '#FFFFFF', borderColor: SFK.gold, color: SFK.purple };
+  const fieldStyle   = { background: '#F5F0F8', borderColor: '#D0C8D8', color: '#6B5080' };
+
+  const style = variant === 'bench'
+    ? (selected ? selectedStyle : benchStyle)
+    : fieldStyle;
+
   return (
     <div
-      className={[
-        'flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm font-medium transition-all',
-        variant === 'bench'
-          ? selected
-            ? 'bg-green-600 text-white border-green-600 shadow-md scale-105'
-            : 'bg-white text-slate-700 border-slate-300 active:bg-slate-100'
-          : 'bg-slate-100 text-slate-600 border-slate-200',
-      ].join(' ')}
+      className="flex items-center gap-1 rounded-full border-2 px-3 py-1.5 text-sm font-medium transition-all"
+      style={style}
     >
       <button onClick={onSelect} className="min-h-[28px]">
         {player.name}
       </button>
       <button
         onClick={onRemove}
-        className="ml-1 text-current opacity-50 hover:opacity-100 transition-opacity"
+        className="ml-1 opacity-50 hover:opacity-100 transition-opacity"
         aria-label={`Ta bort ${player.name}`}
       >
         <X size={13} />

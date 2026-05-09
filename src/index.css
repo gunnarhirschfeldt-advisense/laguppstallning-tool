@@ -1,16 +1,14 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;1,800&family=Inter:wght@300;400;600&display=swap');
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #f1f5f9;
-  color: #0f172a;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 300;
+  background: #EDEDF1;
+  color: #000000;
 }
 
-#root {
-  min-height: 100svh;
-}
+#root { min-height: 100svh; }

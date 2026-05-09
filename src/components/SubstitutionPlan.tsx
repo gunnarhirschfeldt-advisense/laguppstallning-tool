@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Plus, Trash2, ArrowRight } from 'lucide-react';
 import { useMatchStore } from '../store/matchStore';
 
+const SFK = { purple: '#3C1053', purpleL: '#EDE0F7', gold: '#C1AA7C' };
+
 export function SubstitutionPlan() {
   const { match, addPlannedSub, removePlannedSub } = useMatchStore();
   const { positions, substitutes, plannedSubs } = match.lineup;
 
   const onFieldIds = Object.values(positions).filter(Boolean) as string[];
-  const benchIds = substitutes;
 
   const [minuteInput, setMinuteInput] = useState('');
   const [playerOutId, setPlayerOutId] = useState('');
@@ -18,7 +19,7 @@ export function SubstitutionPlan() {
     return match.roster.find(p => p.id === id)?.name ?? id;
   }
 
-  function positionFor(id: string): string {
+  function positionFor(id: string) {
     for (const [pos, pid] of Object.entries(positions)) {
       if (pid === id) return pos;
     }
@@ -28,19 +29,14 @@ export function SubstitutionPlan() {
   function handleAdd() {
     setError('');
     if (!playerOutId) { setError('Välj spelare ut'); return; }
-    if (!playerInId) { setError('Välj spelare in'); return; }
+    if (!playerInId)  { setError('Välj spelare in'); return; }
     if (playerOutId === playerInId) { setError('Samma spelare'); return; }
-
     const minute = minuteInput.trim() === '' ? null : parseInt(minuteInput);
     if (minuteInput.trim() !== '' && (isNaN(minute!) || minute! < 0)) {
-      setError('Ogiltig minut');
-      return;
+      setError('Ogiltig minut'); return;
     }
-
     addPlannedSub({ minute: minute ?? null, playerInId, playerOutId });
-    setMinuteInput('');
-    setPlayerOutId('');
-    setPlayerInId('');
+    setMinuteInput(''); setPlayerOutId(''); setPlayerInId('');
   }
 
   const sorted = [...plannedSubs].sort((a, b) => {
@@ -50,55 +46,43 @@ export function SubstitutionPlan() {
     return a.minute - b.minute;
   });
 
+  const inputClass = "w-full rounded-lg border px-2 py-2 text-sm focus:outline-none bg-white";
+  const inputStyle = { borderColor: '#D0C8D8' };
+
   return (
     <div className="space-y-4">
-      <h2 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
+      <h2 className="text-xs font-semibold uppercase tracking-wide" style={{ color: SFK.purple }}>
         Planerade byten
       </h2>
 
-      {/* Add form */}
-      <div className="bg-white rounded-xl border border-slate-200 p-3 space-y-3">
+      <div className="bg-white rounded-xl border p-3 space-y-3" style={{ borderColor: '#DCDCDE' }}>
         <div className="flex gap-2 items-center">
-          <label className="text-xs text-slate-500 w-12 shrink-0">Minut</label>
+          <label className="text-xs w-12 shrink-0" style={{ color: '#6B5080' }}>Minut</label>
           <input
-            type="number"
-            min={0}
-            max={60}
+            type="number" min={0} max={60}
             value={minuteInput}
             onChange={e => setMinuteInput(e.target.value)}
             placeholder="Vid behov"
-            className="w-full rounded-lg border border-slate-300 px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+            className={inputClass} style={inputStyle}
           />
         </div>
-
         <div className="flex gap-2 items-center">
-          <label className="text-xs text-slate-500 w-12 shrink-0">Ut</label>
-          <select
-            value={playerOutId}
-            onChange={e => setPlayerOutId(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
-          >
+          <label className="text-xs w-12 shrink-0" style={{ color: '#6B5080' }}>Ut</label>
+          <select value={playerOutId} onChange={e => setPlayerOutId(e.target.value)}
+            className={inputClass} style={inputStyle}>
             <option value="">Välj spelare...</option>
             {onFieldIds.map(id => (
-              <option key={id} value={id}>
-                {playerName(id)} ({positionFor(id)})
-              </option>
+              <option key={id} value={id}>{playerName(id)} ({positionFor(id)})</option>
             ))}
           </select>
         </div>
-
         <div className="flex gap-2 items-center">
-          <label className="text-xs text-slate-500 w-12 shrink-0">In</label>
-          <select
-            value={playerInId}
-            onChange={e => setPlayerInId(e.target.value)}
-            className="w-full rounded-lg border border-slate-300 px-2 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 bg-white"
-          >
+          <label className="text-xs w-12 shrink-0" style={{ color: '#6B5080' }}>In</label>
+          <select value={playerInId} onChange={e => setPlayerInId(e.target.value)}
+            className={inputClass} style={inputStyle}>
             <option value="">Välj spelare...</option>
-            {benchIds.map(id => (
-              <option key={id} value={id}>
-                {playerName(id)}
-              </option>
+            {substitutes.map(id => (
+              <option key={id} value={id}>{playerName(id)}</option>
             ))}
           </select>
         </div>
@@ -107,41 +91,39 @@ export function SubstitutionPlan() {
 
         <button
           onClick={handleAdd}
-          disabled={onFieldIds.length === 0 || benchIds.length === 0}
-          className="w-full flex items-center justify-center gap-2 bg-green-600 text-white rounded-lg px-3 py-2.5 text-sm font-medium disabled:opacity-40 active:bg-green-700"
+          disabled={onFieldIds.length === 0 || substitutes.length === 0}
+          className="w-full flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold text-white disabled:opacity-40 transition-opacity"
+          style={{ background: SFK.purple }}
         >
-          <Plus size={15} />
-          Lägg till byte
+          <Plus size={15} /> Lägg till byte
         </button>
 
         {onFieldIds.length === 0 && (
-          <p className="text-xs text-slate-400 text-center">
+          <p className="text-xs text-center" style={{ color: '#A090B0' }}>
             Placera spelare på planen först
           </p>
         )}
       </div>
 
-      {/* Substitution list */}
       {sorted.length > 0 && (
         <div className="space-y-2">
           {sorted.map(sub => (
-            <div
-              key={sub.id}
-              className="flex items-center gap-3 bg-white rounded-xl border border-slate-200 px-3 py-2.5"
-            >
-              <span className="text-xs font-bold text-slate-500 w-12 shrink-0 text-center">
+            <div key={sub.id}
+              className="flex items-center gap-3 bg-white rounded-xl border px-3 py-2.5"
+              style={{ borderColor: '#DCDCDE' }}>
+              <span className="text-xs font-bold w-12 shrink-0 text-center" style={{ color: SFK.gold }}>
                 {sub.minute !== null ? `${sub.minute}'` : 'Vid behov'}
               </span>
               <div className="flex-1 flex items-center gap-1.5 text-sm min-w-0">
                 <span className="font-medium truncate">{playerName(sub.playerOutId)}</span>
-                <ArrowRight size={13} className="text-slate-400 shrink-0" />
-                <span className="font-medium truncate text-green-700">
+                <ArrowRight size={13} className="shrink-0" style={{ color: '#C0B0C8' }} />
+                <span className="font-semibold truncate" style={{ color: SFK.purple }}>
                   {playerName(sub.playerInId)}
                 </span>
               </div>
               <button
                 onClick={() => removePlannedSub(sub.id)}
-                className="text-slate-400 hover:text-red-500 transition-colors p-1"
+                className="p-1 transition-colors opacity-40 hover:opacity-100"
                 aria-label="Ta bort byte"
               >
                 <Trash2 size={15} />
@@ -152,7 +134,7 @@ export function SubstitutionPlan() {
       )}
 
       {sorted.length === 0 && (
-        <p className="text-sm text-slate-400 italic text-center py-2">
+        <p className="text-sm italic text-center py-2" style={{ color: '#A090B0' }}>
           Inga planerade byten
         </p>
       )}

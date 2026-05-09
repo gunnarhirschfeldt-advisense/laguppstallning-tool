@@ -7,12 +7,9 @@ export function Pitch() {
   const { positions } = match.lineup;
 
   function handlePositionClick(pos: Position) {
-    const occupantId = positions[pos];
     if (selectedPlayerId) {
-      // A player is selected — assign them here (even if occupied)
       assignToPosition(pos);
-    } else if (occupantId) {
-      // No selection — click occupied position to remove
+    } else if (positions[pos]) {
       removeFromPosition(pos);
     }
   }
@@ -25,10 +22,8 @@ export function Pitch() {
         minHeight: 340,
       }}
     >
-      {/* Pitch markings */}
       <PitchMarkings />
 
-      {/* Position grid — 5 cols × 4 rows */}
       <div
         className="relative z-10 grid py-4 px-2"
         style={{
@@ -54,24 +49,22 @@ export function Pitch() {
             >
               <button
                 onClick={() => handlePositionClick(pos)}
-                className={[
-                  'flex flex-col items-center justify-center rounded-xl border-2 transition-all',
-                  'min-w-[64px] min-h-[64px] px-2 py-1 cursor-pointer',
+                className="flex flex-col items-center justify-center rounded-xl border-2 transition-all min-w-[64px] min-h-[64px] px-2 py-1 cursor-pointer"
+                style={
                   player
-                    ? `${meta.bgColor} ${meta.borderColor} ${meta.color}`
+                    ? { background: meta.bg, borderColor: meta.border, color: meta.text }
                     : isTarget
-                    ? 'bg-white/30 border-white border-dashed text-white'
-                    : 'bg-white/20 border-white/40 border-dashed text-white/70',
-                  isTarget && !player ? 'scale-105 shadow-lg' : '',
-                ].join(' ')}
+                    ? { background: 'rgba(255,255,255,0.3)', borderColor: 'white', borderStyle: 'dashed', color: 'white' }
+                    : { background: 'rgba(255,255,255,0.15)', borderColor: 'rgba(255,255,255,0.35)', borderStyle: 'dashed', color: 'rgba(255,255,255,0.65)' }
+                }
               >
-                <span className="text-xs font-bold leading-none">{meta.label}</span>
+                <span className="text-xs font-semibold leading-none">{meta.label}</span>
                 {player ? (
                   <span className="text-sm font-semibold leading-tight mt-0.5 text-center max-w-[72px] truncate">
                     {player.name}
                   </span>
                 ) : (
-                  <span className="text-xs opacity-60 mt-0.5">–</span>
+                  <span className="text-xs opacity-50 mt-0.5">–</span>
                 )}
               </button>
             </div>
@@ -92,21 +85,13 @@ function PitchMarkings() {
       stroke="rgba(255,255,255,0.25)"
       strokeWidth="0.5"
     >
-      {/* Outer border */}
       <rect x="3" y="2" width="94" height="96" />
-      {/* Halfway line */}
       <line x1="3" y1="50" x2="97" y2="50" />
-      {/* Center circle */}
       <circle cx="50" cy="50" r="12" />
-      {/* Center spot */}
       <circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.25)" />
-      {/* Penalty area top */}
       <rect x="25" y="2" width="50" height="18" />
-      {/* Goal top */}
       <rect x="37" y="2" width="26" height="6" />
-      {/* Penalty area bottom */}
       <rect x="25" y="80" width="50" height="18" />
-      {/* Goal bottom */}
       <rect x="37" y="92" width="26" height="6" />
     </svg>
   );
