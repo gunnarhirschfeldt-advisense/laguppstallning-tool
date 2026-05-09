@@ -43,7 +43,7 @@ export function PitchSVG() {
   }
 
   return (
-    <div className="relative w-full select-none" style={{ aspectRatio: `${SVG_W} / ${SVG_H}`, background: '#0a1a0e' }}>
+    <div className="relative w-full select-none" style={{ aspectRatio: `${SVG_W} / ${SVG_H}`, background: '#358a40' }}>
 
       {/* ── SVG pitch background ── */}
       <svg
@@ -55,11 +55,11 @@ export function PitchSVG() {
         {/* Grass stripes */}
         {Array.from({ length: 10 }, (_, i) => (
           <rect key={i} x={0} y={i * 46} width={SVG_W} height={46}
-            fill={i % 2 === 0 ? '#0e2212' : '#122817'} />
+            fill={i % 2 === 0 ? '#3d9e4a' : '#358a40'} />
         ))}
 
         {/* Pitch markings */}
-        <g stroke="rgba(255,255,255,0.22)" strokeWidth="1.2" fill="none">
+        <g stroke="rgba(255,255,255,0.35)" strokeWidth="1.2" fill="none">
           <rect x="18" y="14" width="300" height="432" rx="2" />
           <line x1="18" y1="230" x2="318" y2="230" />
           <circle cx="168" cy="230" r="42" />

@@ -9,6 +9,8 @@ type JerseyPositionButtonProps = {
   onClick: () => void;
 };
 
+const BASE = import.meta.env.BASE_URL;
+
 export function JerseyPositionButton({
   positionLabel,
   role,
@@ -19,9 +21,15 @@ export function JerseyPositionButton({
 }: JerseyPositionButtonProps) {
   const isGK = role === 'GK';
 
-  const jerseyH = compact ? 48 : selected ? 64 : 56;
+  const jerseyH = compact ? 80 : selected ? 112 : 96;
   const jerseyW = Math.round(jerseyH * (240 / 360));
   const numSize = compact ? 20 : selected ? 28 : 24;
+
+  const jerseyImage = isGK
+    ? `${BASE}images/jersey-gk-thumbnail-240.png`
+    : `${BASE}images/jersey-thumbnail-240.webp`;
+
+  const showNumber = !isGK;
 
   const ariaLabel = player
     ? `${positionLabel}, ${player.name}, nummer ${player.number}`
@@ -51,36 +59,26 @@ export function JerseyPositionButton({
         selected ? 'scale-105 ring-4 ring-white/60 shadow-lg rounded-xl' : ''
       }`}>
       {/* Jersey + number */}
-      <div className="relative" style={{ width: jerseyW, height: jerseyH }}>
-        {isGK ? (
-          <div
-            className="rounded-sm"
-            style={{
-              width: jerseyW,
-              height: jerseyH,
-              background: 'linear-gradient(160deg, #15803d 0%, #166534 100%)',
-            }}
-          />
-        ) : (
-          <img
-            src={`${import.meta.env.BASE_URL}images/jersey-thumbnail-240.webp`}
-            alt=""
-            draggable={false}
-            style={{
-              width: jerseyW,
-              height: jerseyH,
-              display: 'block',
-              objectFit: 'cover',
-              mixBlendMode: 'multiply',
-            }}
-          />
+      <div className="relative overflow-hidden" style={{ width: jerseyW, height: jerseyH, borderRadius: isGK ? 8 : 0 }}>
+        <img
+          src={jerseyImage}
+          alt=""
+          draggable={false}
+          style={{
+            width: jerseyW,
+            height: jerseyH,
+            display: 'block',
+            objectFit: 'cover',
+            mixBlendMode: isGK ? 'normal' : 'darken',
+          }}
+        />
+        {showNumber && (
+          <span
+            className="jersey-number absolute left-1/2 -translate-x-1/2 -translate-y-1/2 select-none"
+            style={{ top: '52%', fontSize: numSize }}>
+            {player.number}
+          </span>
         )}
-        {/* Ryggnummer */}
-        <span
-          className="jersey-number absolute left-1/2 -translate-x-1/2 -translate-y-1/2 select-none"
-          style={{ top: '42%', fontSize: numSize }}>
-          {player.number}
-        </span>
       </div>
 
       {/* Namnpill */}
